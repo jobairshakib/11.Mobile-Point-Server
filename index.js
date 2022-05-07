@@ -18,25 +18,17 @@ async function run() {
 
         app.post('/login', async (req, res) => {
             const email = req.body;
-            
             const token = jwt.sign(email, process.env.JWT_TOKEN);
             console.log(token);
         })
 
         app.get('/item', async (req, res) => {
-            const query = {};
+            const email = req.query.email;
+            const query = { email: email };
             const cursor = itemCollection.find(query);
             const items = await cursor.toArray();
             res.send(items);
         })
-        // app.get('/item', async (req, res) => {
-        //     const email = req.query.email;
-        //     console.log(email);
-        //     const query = {};
-        //     const cursor = itemCollection.find(query);
-        //     const items = await cursor.toArray();
-        //     res.send(items);
-        // })
 
         app.get('/item/:id', async (req, res) => {
             const id = req.params.id;
@@ -45,12 +37,18 @@ async function run() {
             res.send(item);
         })
 
-        
-
-        app.post('/addItem', async (req, res) => {
-            const item = req.body;
-            const result = await itemCollection.insertOne(item);
-            res.send({success:"Item Added"});
+        app.put('/item/:id', async (req, res) => {
+            const id = req.params.id;
+            const updateStock = req.body;
+            const filter = { _id: ObjectId(id) };
+            const options = { upsert: true };
+            const updateDoc = { $set: updateStock };
+            const result = await itemCollection.updateOne(
+                filter,
+                updateDoc,
+                options
+            );
+            res.send(result);
         })
 
         app.delete('/item/:id', async (req, res) => {
@@ -59,6 +57,14 @@ async function run() {
             const result = await itemCollection.deleteOne(query);
             res.send(result);
         })
+
+        app.post('/addItem', async (req, res) => {
+            const item = req.body;
+            const result = await itemCollection.insertOne(item);
+            res.send(result);
+        })
+
+
 
 
     } finally {
