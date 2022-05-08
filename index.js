@@ -22,6 +22,13 @@ async function run() {
         //     console.log(token);
         // })
 
+        app.get('/items', async(req, res) => {
+            const query = {};
+            const cursor = itemCollection.find(query);
+            const allItems = await cursor.toArray();
+            res.send(allItems);
+        })
+
         app.get('/item', async (req, res) => {
             const email = req.query.email;
             const query = { email: email };
