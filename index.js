@@ -16,11 +16,11 @@ async function run() {
         await client.connect();
         const itemCollection = client.db('mobilePoint').collection('item');
 
-        app.post('/login', async (req, res) => {
-            const email = req.body;
-            const token = jwt.sign(email, process.env.JWT_TOKEN);
-            console.log(token);
-        })
+        // app.post('/login', async (req, res) => {
+        //     const email = req.body;
+        //     const token = jwt.sign(email, process.env.JWT_TOKEN);
+        //     console.log(token);
+        // })
 
         app.get('/item', async (req, res) => {
             const email = req.query.email;
